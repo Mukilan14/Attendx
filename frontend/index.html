@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AttendX — Student Attendance System</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ══ HERO PAGE STYLES ═══════════════════════════════ */
+.hero-wrap {
+  min-height: calc(100vh - 62px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px 100px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+/* Dot-grid background */
+.hero-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: .45;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 30%, transparent 100%);
+}
+
+/* Colour glow blobs */
+.hero-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 40% at 20% 20%, rgba(26,107,74,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 35% at 80% 75%, rgba(201,85,42,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Eyebrow pill ──────────────────────────────── */
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 36px;
+  box-shadow: 0 2px 8px rgba(13,15,20,.06);
+}
+.hero-eyebrow .ew-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { box-shadow: 0 0 0 0 rgba(26,107,74,.5); }
+  50%      { box-shadow: 0 0 0 5px rgba(26,107,74,0); }
+}
+
+/* ── Heading ───────────────────────────────────── */
+.hero-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: clamp(44px, 7vw, 88px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -.035em;
+  color: var(--ink);
+  max-width: 820px;
+  margin: 0;
+}
+.hero-title .t-light {
+  display: block;
+  color: var(--mid);
+  font-weight: 500;
+  font-size: .88em;
+}
+.hero-title .t-bold {
+  display: block;
+  color: var(--ink);
+}
+.hero-title mark {
+  background: none;
+  color: var(--accent);
+  position: relative;
+  white-space: nowrap;
+}
+.hero-title mark::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  opacity: .35;
+}
+
+/* ── Subtitle ──────────────────────────────────── */
+.hero-sub {
+  font-size: 17px;
+  color: var(--mid);
+  max-width: 500px;
+  line-height: 1.75;
+  margin: 26px 0 0;
+}
+
+/* ── CTA ───────────────────────────────────────── */
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 44px;
+}
+.hero-btn-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-hero-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 38px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .2s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 4px 20px rgba(13,15,20,.18);
+}
+.btn-hero-primary:hover {
+  background: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(26,107,74,.3);
+}
+.btn-hero-primary .arr {
+  font-size: 18px;
+  transition: transform .2s;
+}
+.btn-hero-primary:hover .arr { transform: translateX(4px); }
+
+.btn-hero-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--mid);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: .2s;
+}
+.btn-hero-ghost:hover { border-color: var(--ink); color: var(--ink); }
+
+/* Hint line */
+.hero-hint {
+  font-size: 12px;
+  color: var(--mid);
+  opacity: .7;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.hint-dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--line);
+}
+
+/* ── Feature cards ─────────────────────────────── */
+.hero-features {
+  display: flex;
+  gap: 12px;
+  margin-top: 64px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 760px;
+}
+.feat-card {
+  background: var(--surf);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  flex: 1;
+  min-width: 162px;
+  max-width: 210px;
+  box-shadow: 0 1px 4px rgba(13,15,20,.05);
+  transition: .2s;
+}
+.feat-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(26,107,74,.08);
+}
+.feat-icon { font-size: 20px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+.feat-title {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.feat-desc { font-size: 12px; color: var(--mid); line-height: 1.5; }
+
+/* ── Scroll cue ────────────────────────────────── */
+.hero-scroll-cue {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  opacity: .4;
+  transition: opacity .2s;
+}
+.hero-scroll-cue:hover { opacity: .8; }
+.scroll-line {
+  width: 1.5px; height: 36px;
+  background: linear-gradient(to bottom, var(--mid), transparent);
+  border-radius: 2px;
+  animation: scrollLine 1.8s infinite;
+}
+@keyframes scrollLine {
+  0%   { transform: scaleY(0); transform-origin: top; }
+  50%  { transform: scaleY(1); transform-origin: top; }
+  51%  { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+.scroll-label {
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--mid);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .feat-card { min-width: 140px; padding: 14px; }
+  .hero-scroll-cue { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+<div id="loader">
+  <div class="loader-logo">AttendX</div>
+  <div class="loader-sub">Loading…</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- ══════════════════ PAGE 1: HOME ══════════════════ -->
+<div id="page-home" class="page">
+
+  <div class="topbar">
+    <div class="logo" onclick="goTo('home')">Attend<span>X</span></div>
+    <div class="topbar-right">
+      <button class="btn-outline" style="padding:8px 22px;font-size:13px;" onclick="goTo('departments')">Sign In</button>
+    </div>
+  </div>
+
+  <div class="hero-wrap">
+    <div class="hero-inner">
+
+      <!-- Eyebrow -->
+      <div class="hero-eyebrow">
+        <span class="ew-dot"></span>
+        Student Attendance Management System
+      </div>
+
+      <!-- Title -->
+      <h1 class="hero-title">
+        <span class="t-light">Track, Manage &amp;</span>
+        <span class="t-bold"><mark>Simplify</mark> Attendance</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="hero-sub">
+        A unified platform for students, faculty &amp; administration —
+        with structured OD/Leave approval workflows and real-time tracking.
+      </p>
+
+      <!-- CTA -->
+      <div class="hero-actions">
+        <div class="hero-btn-row">
+          <button class="btn-hero-primary" onclick="goTo('departments')">
+            Get Started <span class="arr">→</span>
+          </button>
+          <button class="btn-hero-ghost" onclick="goTo('departments')">
+            Browse Departments
+          </button>
+        </div>
+        <div class="hero-hint">
+          <span>Mentor → CI → HOD Approval</span>
+          <span class="hint-dot"></span>
+          <span>JWT Secured</span>
+          <span class="hint-dot"></span>
+          <span>MySQL Backed</span>
+        </div>
+      </div>
+
+      <!-- Feature cards -->
+      <div class="hero-features">
+        <div class="feat-card">
+          <div class="feat-icon">📋</div>
+          <div>
+            <div class="feat-title">Mark Attendance</div>
+            <div class="feat-desc">Class-wise daily marking with instant % update</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📝</div>
+          <div>
+            <div class="feat-title">OD / Leave</div>
+            <div class="feat-desc">3-level approval — Mentor, CI &amp; HOD</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">👥</div>
+          <div>
+            <div class="feat-title">5 User Roles</div>
+            <div class="feat-desc">Student, Mentor, CI, HOD &amp; Admin</div>
+          </div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📊</div>
+          <div>
+            <div class="feat-title">Live Analytics</div>
+            <div class="feat-desc">Dept-wide stats &amp; below-75% alerts</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll cue -->
+    <div class="hero-scroll-cue" onclick="goTo('departments')">
+      <div class="scroll-line"></div>
+      <span class="scroll-label">Explore</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 2: DEPARTMENTS ══════════════════ -->
+<div id="page-departments" class="page">
+  <div class="topbar">
+    <div class="logo" onclick="goTo('home')">Attend<span>X</span></div>
+    <div class="topbar-right">
+      <button class="back-btn" onclick="goBack()">← Back</button>
+    </div>
+  </div>
+  <div class="page-body">
+    <div class="breadcrumb">
+      <span class="bc-link" onclick="goTo('home')">Home</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-curr">Departments</span>
+    </div>
+    <div class="sec-header" style="margin-bottom:32px;">
+      <div class="sec-eyebrow">Step 1 of 2</div>
+      <h2>Select Your Department</h2>
+      <p>Choose your department to proceed to the login page</p>
+    </div>
+    <div class="dept-grid" id="dept-grid">
+      <div class="loading-spinner"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 3: LOGIN ══════════════════ -->
+<div id="page-login" class="page">
+  <div class="topbar">
+    <div class="logo" onclick="goTo('home')">Attend<span>X</span></div>
+    <div class="topbar-right">
+      <button class="back-btn" onclick="goBack()">← Departments</button>
+    </div>
+  </div>
+  <div class="login-wrap">
+    <div class="login-left">
+      <div class="login-lc">
+        <div class="login-dept-icon" id="login-dept-icon">💻</div>
+        <h2 id="login-dept-name">Department Login</h2>
+        <p id="login-dept-desc">Sign in to access your attendance dashboard.</p>
+        <div class="login-feats">
+          <div class="login-feat"><div class="feat-check">✓</div>Real-time attendance tracking</div>
+          <div class="login-feat"><div class="feat-check">✓</div>Multi-level OD/Leave approvals</div>
+          <div class="login-feat"><div class="feat-check">✓</div>Automatic % calculation</div>
+          <div class="login-feat"><div class="feat-check">✓</div>Secure JWT authentication</div>
+          <div class="login-feat"><div class="feat-check">✓</div>MySQL persistent storage</div>
+        </div>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-box">
+        <h3>Welcome Back</h3>
+        <div class="login-sub">Sign in with your credentials</div>
+        <div class="login-tabs" style="display:flex;gap:0;background:var(--cream);border-radius:10px;padding:4px;margin-bottom:28px;">
+          <button class="login-tab active" onclick="switchLoginTab('student')">Student</button>
+          <button class="login-tab"        onclick="switchLoginTab('staff')">Staff</button>
+        </div>
+        <div id="login-student-form">
+          <div class="form-group">
+            <label>University Reg No</label>
+            <input type="text" id="l-regno" placeholder="e.g. 21CS001">
+          </div>
+          <div class="form-group">
+            <label>Date of Birth (Password)</label>
+            <input type="date" id="l-dob">
+          </div>
+          <button id="btn-login-student" class="btn-full" onclick="doLogin('student')">Sign In as Student</button>
+          <div class="form-divider">or</div>
+          <button class="btn-outline" style="width:100%;padding:11px;" onclick="switchLoginTab('register')">Register New Student</button>
+        </div>
+        <div id="login-staff-form" class="hidden">
+          <div class="form-group">
+            <label>Staff ID</label>
+            <input type="text" id="l-staffid" placeholder="e.g. HOD_CSE">
+          </div>
+          <div class="form-group">
+            <label>Date of Birth (Password)</label>
+            <input type="date" id="l-staff-dob">
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <select id="l-role">
+              <option value="class_incharge">Class Incharge</option>
+              <option value="mentor">Mentor</option>
+              <option value="hod">HOD</option>
+              <option value="staff">Staff</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <button id="btn-login-staff" class="btn-full" onclick="doLogin('staff')">Sign In as Staff</button>
+          <div class="form-divider">or</div>
+          <button class="btn-outline" style="width:100%;padding:11px;" onclick="switchLoginTab('staff-register')">Register New Staff</button>
+        </div>
+
+        <!-- Staff register -->
+        <div id="login-staff-register-form" class="hidden">
+          <div class="form-row">
+            <div class="form-group"><label>Full Name *</label><input type="text" id="sr-name" placeholder="Your full name"></div>
+            <div class="form-group"><label>Staff ID *</label><input type="text" id="sr-staffid" placeholder="e.g. CI_CSE1A"></div>
+          </div>
+          <div class="form-group"><label>Date of Birth * (becomes your password)</label><input type="date" id="sr-dob"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Email</label><input type="email" id="sr-email" placeholder="staff@college.edu"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="sr-phone" placeholder="9876543210"></div>
+          </div>
+          <div class="form-group">
+            <label>Role *</label>
+            <select id="sr-role" onchange="toggleStaffClassFields()">
+              <option value="class_incharge">Class Incharge</option>
+              <option value="mentor">Mentor</option>
+              <option value="hod">HOD</option>
+              <option value="staff">Staff</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div id="sr-class-fields" class="form-row">
+            <div class="form-group">
+              <label>Assigned Year</label>
+              <select id="sr-year">
+                <option value="">— All —</option>
+                <option value="1">I Year</option>
+                <option value="2">II Year</option>
+                <option value="3">III Year</option>
+                <option value="4">IV Year</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Assigned Section</label>
+              <select id="sr-section">
+                <option value="">— All —</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+              </select>
+            </div>
+          </div>
+          <button id="btn-staff-register" class="btn-full" onclick="doStaffRegister()">Register Staff Account</button>
+          <div class="form-divider">already registered?</div>
+          <button class="btn-outline" style="width:100%;padding:11px;" onclick="switchLoginTab('staff')">Sign In</button>
+        </div>
+        <div id="login-register-form" class="hidden">
+          <div class="form-group"><label>Full Name *</label><input type="text" id="r-name" placeholder="Your full name"></div>
+          <div class="form-row">
+            <div class="form-group"><label>Reg No *</label><input type="text" id="r-regno" placeholder="21CS001"></div>
+            <div class="form-group"><label>Date of Birth *</label><input type="date" id="r-dob"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Email</label><input type="email" id="r-email"></div>
+            <div class="form-group"><label>Phone</label><input type="tel" id="r-phone"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Year</label>
+              <select id="r-year">
+                <option value="1">I Year</option><option value="2">II Year</option>
+                <option value="3">III Year</option><option value="4">IV Year</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Section</label>
+              <select id="r-section">
+                <option value="A">A</option><option value="B">B</option><option value="C">C</option>
+              </select>
+            </div>
+          </div>
+          <button id="btn-register" class="btn-full" onclick="doRegister()">Register</button>
+          <div class="form-divider">already registered?</div>
+          <button class="btn-outline" style="width:100%;padding:11px;" onclick="switchLoginTab('student')">Sign In</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ PAGE 4: DASHBOARD ══════════════════ -->
+<div id="page-dashboard" class="page">
+  <div class="topbar">
+    <div class="logo" onclick="confirmLogout()">Attend<span>X</span></div>
+    <div class="topbar-right">
+      <div class="user-chip">
+        <div class="u-avatar" id="topbar-avatar">?</div>
+        <div>
+          <div class="u-name" id="topbar-name">—</div>
+          <div class="u-role" id="topbar-role">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+  <div class="dash-layout">
+    <div class="sidebar" id="dash-sidebar"></div>
+    <div class="dash-main" id="dash-main">
+      <div class="loading-spinner"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL: MARK ATTENDANCE ════════ -->
+<div class="modal-overlay" id="modal-attendance">
+  <div class="modal modal-wide">
+    <div class="modal-head">
+      <h3>✅ Mark Attendance</h3>
+      <button class="modal-close" onclick="closeModal('modal-attendance')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom:20px;max-width:220px;">
+        <label>Date</label>
+        <input type="date" id="att-date">
+      </div>
+      <div class="att-grid" id="att-grid"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-sm" onclick="closeModal('modal-attendance')">Cancel</button>
+      <button id="btn-save-att" class="btn-sm btn-sm-primary" onclick="submitAttendance()">Save Attendance</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL: OD/LEAVE ════════ -->
+<div class="modal-overlay" id="modal-od">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>📝 Apply OD / Leave</h3>
+      <button class="modal-close" onclick="closeModal('modal-od')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Request Type</label>
+        <select id="od-type">
+          <option value="OD">On Duty (OD)</option>
+          <option value="Leave">Leave</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>From Date</label><input type="date" id="od-from"></div>
+        <div class="form-group"><label>To Date</label><input type="date" id="od-to"></div>
+      </div>
+      <div class="form-group">
+        <label>Reason *</label>
+        <textarea id="od-reason" rows="3" placeholder="Describe reason for OD/Leave…"></textarea>
+      </div>
+      <div class="info-alert">
+        📋 <span>Approval chain: <strong>Mentor → Class Incharge → HOD</strong>. All three must approve.</span>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-sm" onclick="closeModal('modal-od')">Cancel</button>
+      <button id="btn-submit-od" class="btn-sm btn-sm-primary" onclick="submitOD()">Submit Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL: OD DETAIL ════════ -->
+<div class="modal-overlay" id="modal-od-detail">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>📄 Request Details</h3>
+      <button class="modal-close" onclick="closeModal('modal-od-detail')">×</button>
+    </div>
+    <div class="modal-body" id="od-detail-body"></div>
+    <div class="modal-foot" id="od-detail-foot">
+      <button class="btn-sm" onclick="closeModal('modal-od-detail')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ SCRIPTS ════════ -->
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script>
+async function buildDeptGrid() {
+  const grid = document.getElementById('dept-grid');
+  try {
+    const depts = await API.getDepartments();
+    grid.innerHTML = depts.map(d => `
+      <div class="dept-card" onclick="selectDept(${JSON.stringify(d).replace(/"/g,'&quot;')})">
+        <div class="dept-icon" style="background:${deptBg(d.code)};color:${deptColor(d.code)};">${d.icon}</div>
+        <div>
+          <div class="dept-name">${esc(d.name)}</div>
+          <div class="dept-code">${esc(d.code)}</div>
+          <div class="dept-meta">
+            <span class="badge badge-green">${d.studentCount} Students</span>
+            <span class="badge badge-gray">${d.staffCount} Staff</span>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div>
+      <p>Could not connect to backend.<br>Make sure the Spring Boot server is running on port 8080.</p></div>`;
+    toast('Backend not reachable — is the server running?', 'error', 6000);
+  }
+}
+
+function deptColor(code) {
+  const m = { CSE:'#1a6b4a', ECE:'#2a69b5', MECH:'#8c4a20', CIVIL:'#6b4ca8', IT:'#0e7490', EEE:'#b5430e' };
+  return m[code] || '#1a6b4a';
+}
+function deptBg(code) {
+  const m = { CSE:'#e8f5ef', ECE:'#e8f0fb', MECH:'#fdf0e8', CIVIL:'#f2edfc', IT:'#e0f7fa', EEE:'#fdf4f0' };
+  return m[code] || '#e8f5ef';
+}
+
+function selectDept(d) {
+  window.selectedDept = d;
+  document.getElementById('login-dept-icon').textContent = d.icon;
+  document.getElementById('login-dept-name').textContent = d.name;
+  document.getElementById('login-dept-desc').textContent = `Sign in to access the ${d.code} department dashboard.`;
+  switchLoginTab('student');
+  ['l-regno','l-dob','l-staffid','l-staff-dob',
+   'r-name','r-regno','r-dob','r-email','r-phone',
+   'sr-name','sr-staffid','sr-dob','sr-email','sr-phone'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  goTo('login');
+}
+
+function confirmLogout() {
+  if (confirm('Return to home page?')) doLogout();
+}
+
+
+
+window.addEventListener('DOMContentLoaded', async () => {
+  setTimeout(() => {
+    const l = document.getElementById('loader');
+    l.style.opacity = '0';
+    setTimeout(() => l.style.display = 'none', 400);
+  }, 1200);
+
+  await buildDeptGrid();
+
+  const user = getUser();
+  if (user && getToken()) {
+    initDashboard();
+    goTo('dashboard', false);
+  } else {
+    goTo('home', false);
+  }
+});
+</script>
+</body>
+</html>
